@@ -18,6 +18,7 @@ The Lattice SDK Python library provides convenient access to the Lattice SDK API
 - [Exception Handling](#exception-handling)
 - [Streaming](#streaming)
 - [Pagination](#pagination)
+- [Oauth Token Override](#oauth-token-override)
 - [Advanced](#advanced)
   - [Access Raw Response Data](#access-raw-response-data)
   - [Retries](#retries)
@@ -46,7 +47,7 @@ For support with this library please reach out to your Anduril representative.
 
 ## Reference
 
-A full reference for this library is available [here](https://github.com/anduril/lattice-sdk-python/blob/HEAD/./reference.md).
+A full reference for this library is available [here](https://github.com/fern-support/lattice-sdk-python/blob/HEAD/./reference.md).
 
 ## Usage
 
@@ -56,10 +57,11 @@ Instantiate and use the client with the following:
 from anduril import Lattice
 
 client = Lattice(
-    token="YOUR_TOKEN",
+    client_id="YOUR_CLIENT_ID",
+    client_secret="YOUR_CLIENT_SECRET",
 )
-client.entities.long_poll_entity_events(
-    session_token="sessionToken",
+client.o_auth_2.get_token(
+    grant_type="authorization_code",
 )
 ```
 
@@ -73,13 +75,14 @@ import asyncio
 from anduril import AsyncLattice
 
 client = AsyncLattice(
-    token="YOUR_TOKEN",
+    client_id="YOUR_CLIENT_ID",
+    client_secret="YOUR_CLIENT_SECRET",
 )
 
 
 async def main() -> None:
-    await client.entities.long_poll_entity_events(
-        session_token="sessionToken",
+    await client.o_auth_2.get_token(
+        grant_type="authorization_code",
     )
 
 
@@ -95,7 +98,7 @@ will be thrown.
 from anduril.core.api_error import ApiError
 
 try:
-    client.entities.long_poll_entity_events(...)
+    client.o_auth_2.get_token(...)
 except ApiError as e:
     print(e.status_code)
     print(e.body)
@@ -109,7 +112,8 @@ The SDK supports streaming responses, as well, the response will be a generator 
 from anduril import Lattice
 
 client = Lattice(
-    token="YOUR_TOKEN",
+    client_id="YOUR_CLIENT_ID",
+    client_secret="YOUR_CLIENT_SECRET",
 )
 response = client.entities.stream_entities()
 for chunk in response.data:
@@ -124,7 +128,8 @@ Paginated requests will return a `SyncPager` or `AsyncPager`, which can be used 
 from anduril import Lattice
 
 client = Lattice(
-    token="YOUR_TOKEN",
+    client_id="YOUR_CLIENT_ID",
+    client_secret="YOUR_CLIENT_SECRET",
 )
 response = client.objects.list_objects()
 for item in response:
@@ -143,6 +148,24 @@ for page in pager.iter_pages():
         print(item)
 ```
 
+## Oauth Token Override
+
+This SDK supports two authentication methods: OAuth client credentials flow (automatic token management) or direct bearer token authentication. You can choose between these options when initializing the client:
+
+```python
+from anduril import Lattice
+
+# Option 1: Direct bearer token (bypass OAuth flow)
+client = Lattice(..., token="my-pre-generated-bearer-token")
+
+from anduril import Lattice
+
+# Option 2: OAuth client credentials flow (automatic token management)
+client = Lattice(
+    ..., client_id="your-client-id", client_secret="your-client-secret"
+)
+```
+
 ## Advanced
 
 ### Access Raw Response Data
@@ -156,7 +179,7 @@ from anduril import Lattice
 client = Lattice(
     ...,
 )
-response = client.entities.with_raw_response.long_poll_entity_events(...)
+response = client.o_auth_2.with_raw_response.get_token(...)
 print(response.headers)  # access the response headers
 print(response.data)  # access the underlying object
 pager = client.objects.list_objects(...)
@@ -188,7 +211,7 @@ A request is deemed retryable when any of the following HTTP status codes is ret
 Use the `max_retries` request option to configure this behavior.
 
 ```python
-client.entities.long_poll_entity_events(..., request_options={
+client.o_auth_2.get_token(..., request_options={
     "max_retries": 1
 })
 ```
@@ -208,7 +231,7 @@ client = Lattice(
 
 
 # Override timeout for a specific method
-client.entities.long_poll_entity_events(..., request_options={
+client.o_auth_2.get_token(..., request_options={
     "timeout_in_seconds": 1
 })
 ```
