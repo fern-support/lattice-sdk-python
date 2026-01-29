@@ -1,5 +1,6 @@
 [project]
 name = "anduril-lattice-sdk"
+dynamic = ["version"]
 
 [tool.poetry]
 name = "anduril-lattice-sdk"
@@ -38,7 +39,7 @@ packages = [
 [tool.poetry.urls]
 Documentation = 'https://developer.anduril.com'
 Homepage = 'https://www.anduril.com/lattice-sdk/'
-Repository = 'https://github.com/anduril/lattice-sdk-python'
+Repository = 'https://github.com/fern-support/lattice-sdk-python'
 
 [tool.poetry.dependencies]
 python = "^3.8"
