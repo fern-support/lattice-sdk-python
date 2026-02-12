@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
-import datetime as dt
 import typing
 
 import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel, update_forward_refs
-from ...core.serialization import FieldMetadata
-from ...types.entity_event_event_type import EntityEventEventType
+from ...types.entity_event import EntityEvent
+from ...types.heartbeat_object import HeartbeatObject
 
 
 class StreamEntitiesResponse_Heartbeat(UniversalBaseModel):
@@ -18,7 +17,7 @@ class StreamEntitiesResponse_Heartbeat(UniversalBaseModel):
     """
 
     event: typing.Literal["heartbeat"] = "heartbeat"
-    timestamp: typing.Optional[dt.datetime] = None
+    data: typing.Optional[HeartbeatObject] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -36,11 +35,7 @@ class StreamEntitiesResponse_Entity(UniversalBaseModel):
     """
 
     event: typing.Literal["entity"] = "entity"
-    event_type: typing_extensions.Annotated[
-        typing.Optional[EntityEventEventType], FieldMetadata(alias="eventType"), pydantic.Field(alias="eventType")
-    ] = None
-    time: typing.Optional[dt.datetime] = None
-    entity: typing.Optional["Entity"] = None
+    data: typing.Optional[EntityEvent] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -55,8 +50,4 @@ class StreamEntitiesResponse_Entity(UniversalBaseModel):
 StreamEntitiesResponse = typing_extensions.Annotated[
     typing.Union[StreamEntitiesResponse_Heartbeat, StreamEntitiesResponse_Entity], pydantic.Field(discriminator="event")
 ]
-from ...types.entity import Entity  # noqa: E402, I001
-from ...types.override import Override  # noqa: E402, I001
-from ...types.overrides import Overrides  # noqa: E402, I001
-
-update_forward_refs(StreamEntitiesResponse_Entity, Entity=Entity, Override=Override, Overrides=Overrides)
+update_forward_refs(StreamEntitiesResponse_Entity)

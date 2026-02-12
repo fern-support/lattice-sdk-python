@@ -5,11 +5,13 @@ from __future__ import annotations
 import typing
 
 import pydantic
-from ..core.pydantic_utilities import IS_PYDANTIC_V2
+from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel, update_forward_refs
 from .entity_event import EntityEvent
 
 
-class EntityStreamEvent(EntityEvent):
+class EntityStreamEvent(UniversalBaseModel):
+    data: typing.Optional[EntityEvent] = None
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:
@@ -18,3 +20,6 @@ class EntityStreamEvent(EntityEvent):
             frozen = True
             smart_union = True
             extra = pydantic.Extra.allow
+
+
+update_forward_refs(EntityStreamEvent)
