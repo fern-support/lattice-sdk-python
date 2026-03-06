@@ -4,17 +4,23 @@ import typing
 
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from .fuel import Fuel
-from .munition import Munition
+from .delivery_error_code import DeliveryErrorCode
 
 
-class Supplies(UniversalBaseModel):
+class DeliveryError(UniversalBaseModel):
     """
-    Represents the state of supplies associated with an entity (available but not in condition to use immediately)
+    DeliveryError contains an error code and message associated with task delivery.
     """
 
-    munitions: typing.Optional[typing.List[Munition]] = None
-    fuel: typing.Optional[typing.List[Fuel]] = None
+    code: typing.Optional[DeliveryErrorCode] = pydantic.Field(default=None)
+    """
+    Error code for Delivery error.
+    """
+
+    message: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Descriptive human-readable string regarding this delivery error.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

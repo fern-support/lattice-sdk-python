@@ -37,6 +37,7 @@ class ObjectsClient:
         since_timestamp: typing.Optional[dt.datetime] = None,
         page_token: typing.Optional[str] = None,
         all_objects_in_mesh: typing.Optional[bool] = None,
+        max_page_size: typing.Optional[int] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SyncPager[PathMetadata, ListResponse]:
         """
@@ -55,6 +56,9 @@ class ObjectsClient:
 
         all_objects_in_mesh : typing.Optional[bool]
             Lists objects across all environment nodes in a Lattice Mesh.
+
+        max_page_size : typing.Optional[int]
+            Sets the maximum number of items that should be returned on a single page.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -81,6 +85,7 @@ class ObjectsClient:
             since_timestamp=since_timestamp,
             page_token=page_token,
             all_objects_in_mesh=all_objects_in_mesh,
+            max_page_size=max_page_size,
             request_options=request_options,
         )
 
@@ -152,6 +157,13 @@ class ObjectsClient:
         -------
         PathMetadata
             Successful upload
+
+        Examples
+        --------
+        from anduril import Lattice
+
+        client = Lattice()
+        client.objects.upload_object()
         """
         _response = self._raw_client.upload_object(object_path, request=request, request_options=request_options)
         return _response.data
@@ -237,6 +249,7 @@ class AsyncObjectsClient:
         since_timestamp: typing.Optional[dt.datetime] = None,
         page_token: typing.Optional[str] = None,
         all_objects_in_mesh: typing.Optional[bool] = None,
+        max_page_size: typing.Optional[int] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncPager[PathMetadata, ListResponse]:
         """
@@ -255,6 +268,9 @@ class AsyncObjectsClient:
 
         all_objects_in_mesh : typing.Optional[bool]
             Lists objects across all environment nodes in a Lattice Mesh.
+
+        max_page_size : typing.Optional[int]
+            Sets the maximum number of items that should be returned on a single page.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -290,6 +306,7 @@ class AsyncObjectsClient:
             since_timestamp=since_timestamp,
             page_token=page_token,
             all_objects_in_mesh=all_objects_in_mesh,
+            max_page_size=max_page_size,
             request_options=request_options,
         )
 
@@ -370,6 +387,21 @@ class AsyncObjectsClient:
         -------
         PathMetadata
             Successful upload
+
+        Examples
+        --------
+        import asyncio
+
+        from anduril import AsyncLattice
+
+        client = AsyncLattice()
+
+
+        async def main() -> None:
+            await client.objects.upload_object()
+
+
+        asyncio.run(main())
         """
         _response = await self._raw_client.upload_object(object_path, request=request, request_options=request_options)
         return _response.data

@@ -6,16 +6,18 @@ import pydantic
 import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
-from .mil_std2525c import MilStd2525C
+from .fixed_retry import FixedRetry
 
 
-class Symbology(UniversalBaseModel):
+class RetryStrategy(UniversalBaseModel):
     """
-    Symbology associated with an entity.
+    Sets an optional try strategy for tasks. Use this option to control how Lattice attempts to retry delivery of tasks to assets with intermittent access or network connectivity to your environment.
     """
 
-    mil_std2525c: typing_extensions.Annotated[
-        typing.Optional[MilStd2525C], FieldMetadata(alias="milStd2525C"), pydantic.Field(alias="milStd2525C")
+    fixed_retry_strategy: typing_extensions.Annotated[
+        typing.Optional[FixedRetry],
+        FieldMetadata(alias="fixedRetryStrategy"),
+        pydantic.Field(alias="fixedRetryStrategy"),
     ] = None
 
     if IS_PYDANTIC_V2:

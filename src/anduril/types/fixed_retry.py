@@ -6,16 +6,20 @@ import pydantic
 import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
-from .mil_std2525c import MilStd2525C
 
 
-class Symbology(UniversalBaseModel):
+class FixedRetry(UniversalBaseModel):
     """
-    Symbology associated with an entity.
+    Defaults to an interval of 5 seconds. If the DeliverBefore field in the task's DeliveryConstraints isn't populated, Lattice does not retry delivery and instead logs a warning.
     """
 
-    mil_std2525c: typing_extensions.Annotated[
-        typing.Optional[MilStd2525C], FieldMetadata(alias="milStd2525C"), pydantic.Field(alias="milStd2525C")
+    retry_interval: typing_extensions.Annotated[
+        typing.Optional[str],
+        FieldMetadata(alias="retryInterval"),
+        pydantic.Field(
+            alias="retryInterval",
+            description="Specifies the interval between retries. A default interval of 5 seconds is used if this field is not set.",
+        ),
     ] = None
 
     if IS_PYDANTIC_V2:

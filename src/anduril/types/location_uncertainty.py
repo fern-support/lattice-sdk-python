@@ -6,7 +6,7 @@ import pydantic
 import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
-from .entity_manager_t_mat_3 import EntityManagerTMat3
+from .entity_manager_t_mat3 import EntityManagerTMat3
 from .error_ellipse import ErrorEllipse
 
 

@@ -7,12 +7,13 @@ import typing
 import httpx
 from .core.api_error import ApiError
 from .core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
+from .core.logging import LogConfig, Logger
 from .core.oauth_token_provider import AsyncOAuthTokenProvider, OAuthTokenProvider
 from .environment import LatticeEnvironment
 
 if typing.TYPE_CHECKING:
     from .entities.client import AsyncEntitiesClient, EntitiesClient
-    from .o_auth_2.client import AsyncOAuth2Client, OAuth2Client
+    from .oauth.client import AsyncOauthClient, OauthClient
     from .objects.client import AsyncObjectsClient, ObjectsClient
     from .tasks.client import AsyncTasksClient, TasksClient
 
@@ -86,6 +87,7 @@ class Lattice:
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
         httpx_client: typing.Optional[httpx.Client] = None,
+        logging: typing.Optional[typing.Union[LogConfig, Logger]] = None,
         client_id: str,
         client_secret: str,
     ): ...
@@ -100,6 +102,7 @@ class Lattice:
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
         httpx_client: typing.Optional[httpx.Client] = None,
+        logging: typing.Optional[typing.Union[LogConfig, Logger]] = None,
         token: typing.Callable[[], str],
     ): ...
     def __init__(
@@ -116,6 +119,7 @@ class Lattice:
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
         httpx_client: typing.Optional[httpx.Client] = None,
+        logging: typing.Optional[typing.Union[LogConfig, Logger]] = None,
     ):
         _defaulted_timeout = (
             timeout if timeout is not None else 60 if httpx_client is None else httpx_client.timeout.read
@@ -133,6 +137,7 @@ class Lattice:
                 if follow_redirects is not None
                 else httpx.Client(timeout=_defaulted_timeout),
                 timeout=_defaulted_timeout,
+                logging=logging,
                 token=_token_getter_override if _token_getter_override is not None else token,
             )
         elif client_id is not None and client_secret is not None:
@@ -146,6 +151,7 @@ class Lattice:
                     if follow_redirects is not None
                     else httpx.Client(timeout=_defaulted_timeout),
                     timeout=_defaulted_timeout,
+                    logging=logging,
                 ),
             )
             self._client_wrapper = SyncClientWrapper(
@@ -158,23 +164,16 @@ class Lattice:
                 if follow_redirects is not None
                 else httpx.Client(timeout=_defaulted_timeout),
                 timeout=_defaulted_timeout,
+                logging=logging,
             )
         else:
             raise ApiError(
                 body="The client must be instantiated with either 'token' or both 'client_id' and 'client_secret'"
             )
-        self._o_auth_2: typing.Optional[OAuth2Client] = None
         self._entities: typing.Optional[EntitiesClient] = None
         self._tasks: typing.Optional[TasksClient] = None
         self._objects: typing.Optional[ObjectsClient] = None
-
-    @property
-    def o_auth_2(self):
-        if self._o_auth_2 is None:
-            from .o_auth_2.client import OAuth2Client  # noqa: E402
-
-            self._o_auth_2 = OAuth2Client(client_wrapper=self._client_wrapper)
-        return self._o_auth_2
+        self._oauth: typing.Optional[OauthClient] = None
 
     @property
     def entities(self):
@@ -199,6 +198,14 @@ class Lattice:
 
             self._objects = ObjectsClient(client_wrapper=self._client_wrapper)
         return self._objects
+
+    @property
+    def oauth(self):
+        if self._oauth is None:
+            from .oauth.client import OauthClient  # noqa: E402
+
+            self._oauth = OauthClient(client_wrapper=self._client_wrapper)
+        return self._oauth
 
 
 class AsyncLattice:
@@ -270,6 +277,7 @@ class AsyncLattice:
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
         httpx_client: typing.Optional[httpx.AsyncClient] = None,
+        logging: typing.Optional[typing.Union[LogConfig, Logger]] = None,
         client_id: str,
         client_secret: str,
     ): ...
@@ -284,6 +292,7 @@ class AsyncLattice:
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
         httpx_client: typing.Optional[httpx.AsyncClient] = None,
+        logging: typing.Optional[typing.Union[LogConfig, Logger]] = None,
         token: typing.Callable[[], str],
     ): ...
     def __init__(
@@ -300,6 +309,7 @@ class AsyncLattice:
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
         httpx_client: typing.Optional[httpx.AsyncClient] = None,
+        logging: typing.Optional[typing.Union[LogConfig, Logger]] = None,
     ):
         _defaulted_timeout = (
             timeout if timeout is not None else 60 if httpx_client is None else httpx_client.timeout.read
@@ -317,6 +327,7 @@ class AsyncLattice:
                 if follow_redirects is not None
                 else httpx.AsyncClient(timeout=_defaulted_timeout),
                 timeout=_defaulted_timeout,
+                logging=logging,
                 token=_token_getter_override if _token_getter_override is not None else token,
             )
         elif client_id is not None and client_secret is not None:
@@ -330,6 +341,7 @@ class AsyncLattice:
                     if follow_redirects is not None
                     else httpx.AsyncClient(timeout=_defaulted_timeout),
                     timeout=_defaulted_timeout,
+                    logging=logging,
                 ),
             )
             self._client_wrapper = AsyncClientWrapper(
@@ -343,23 +355,16 @@ class AsyncLattice:
                 if follow_redirects is not None
                 else httpx.AsyncClient(timeout=_defaulted_timeout),
                 timeout=_defaulted_timeout,
+                logging=logging,
             )
         else:
             raise ApiError(
                 body="The client must be instantiated with either 'token' or both 'client_id' and 'client_secret'"
             )
-        self._o_auth_2: typing.Optional[AsyncOAuth2Client] = None
         self._entities: typing.Optional[AsyncEntitiesClient] = None
         self._tasks: typing.Optional[AsyncTasksClient] = None
         self._objects: typing.Optional[AsyncObjectsClient] = None
-
-    @property
-    def o_auth_2(self):
-        if self._o_auth_2 is None:
-            from .o_auth_2.client import AsyncOAuth2Client  # noqa: E402
-
-            self._o_auth_2 = AsyncOAuth2Client(client_wrapper=self._client_wrapper)
-        return self._o_auth_2
+        self._oauth: typing.Optional[AsyncOauthClient] = None
 
     @property
     def entities(self):
@@ -384,6 +389,14 @@ class AsyncLattice:
 
             self._objects = AsyncObjectsClient(client_wrapper=self._client_wrapper)
         return self._objects
+
+    @property
+    def oauth(self):
+        if self._oauth is None:
+            from .oauth.client import AsyncOauthClient  # noqa: E402
+
+            self._oauth = AsyncOauthClient(client_wrapper=self._client_wrapper)
+        return self._oauth
 
 
 def _get_base_url(*, base_url: typing.Optional[str] = None, environment: LatticeEnvironment) -> str:

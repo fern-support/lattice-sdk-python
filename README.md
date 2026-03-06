@@ -57,7 +57,9 @@ Instantiate and use the client with the following:
 from anduril import Lattice
 
 client = Lattice()
-client.o_auth_2.get_token()
+client.entities.long_poll_entity_events(
+    session_token="sessionToken",
+)
 ```
 
 ## Async Client
@@ -73,7 +75,9 @@ client = AsyncLattice()
 
 
 async def main() -> None:
-    await client.o_auth_2.get_token()
+    await client.entities.long_poll_entity_events(
+        session_token="sessionToken",
+    )
 
 
 asyncio.run(main())
@@ -88,7 +92,7 @@ will be thrown.
 from anduril.core.api_error import ApiError
 
 try:
-    client.o_auth_2.get_token(...)
+    client.entities.long_poll_entity_events(...)
 except ApiError as e:
     print(e.status_code)
     print(e.body)
@@ -163,7 +167,7 @@ from anduril import Lattice
 client = Lattice(
     ...,
 )
-response = client.o_auth_2.with_raw_response.get_token(...)
+response = client.entities.with_raw_response.long_poll_entity_events(...)
 print(response.headers)  # access the response headers
 print(response.status_code)  # access the response status code
 print(response.data)  # access the underlying object
@@ -198,7 +202,7 @@ A request is deemed retryable when any of the following HTTP status codes is ret
 Use the `max_retries` request option to configure this behavior.
 
 ```python
-client.o_auth_2.get_token(..., request_options={
+client.entities.long_poll_entity_events(..., request_options={
     "max_retries": 1
 })
 ```
@@ -218,7 +222,7 @@ client = Lattice(
 
 
 # Override timeout for a specific method
-client.o_auth_2.get_token(..., request_options={
+client.entities.long_poll_entity_events(..., request_options={
     "timeout_in_seconds": 1
 })
 ```

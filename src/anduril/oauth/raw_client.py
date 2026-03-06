@@ -16,51 +16,27 @@ from .types.get_token_response import GetTokenResponse
 OMIT = typing.cast(typing.Any, ...)
 
 
-class RawOAuth2Client:
+class RawOauthClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
     def get_token(
         self,
         *,
-        code: typing.Optional[str] = OMIT,
-        redirect_uri: typing.Optional[str] = OMIT,
         client_id: typing.Optional[str] = OMIT,
         client_secret: typing.Optional[str] = OMIT,
-        refresh_token: typing.Optional[str] = OMIT,
-        username: typing.Optional[str] = OMIT,
-        password: typing.Optional[str] = OMIT,
-        scope: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[GetTokenResponse]:
         """
-        Exchange authorization code, refresh token, client credentials, or resource owner credentials for an access token
+        Gets a new short-lived token using the specified client credentials
 
         Parameters
         ----------
-        code : typing.Optional[str]
-            The authorization code (required for authorization_code grant type)
-
-        redirect_uri : typing.Optional[str]
-            The redirect URI (required for authorization_code grant type)
-
         client_id : typing.Optional[str]
             The client identifier
 
         client_secret : typing.Optional[str]
             The client secret
-
-        refresh_token : typing.Optional[str]
-            The refresh token (required for refresh_token grant type)
-
-        username : typing.Optional[str]
-            The resource owner username (required for password grant type)
-
-        password : typing.Optional[str]
-            The resource owner password (required for password grant type)
-
-        scope : typing.Optional[str]
-            The scope of the access request
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -74,14 +50,8 @@ class RawOAuth2Client:
             "api/v1/oauth/token",
             method="POST",
             data={
-                "code": code,
-                "redirect_uri": redirect_uri,
                 "client_id": client_id,
                 "client_secret": client_secret,
-                "refresh_token": refresh_token,
-                "username": username,
-                "password": password,
-                "scope": scope,
                 "grant_type": "client_credentials",
             },
             headers={
@@ -128,51 +98,27 @@ class RawOAuth2Client:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
 
-class AsyncRawOAuth2Client:
+class AsyncRawOauthClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
     async def get_token(
         self,
         *,
-        code: typing.Optional[str] = OMIT,
-        redirect_uri: typing.Optional[str] = OMIT,
         client_id: typing.Optional[str] = OMIT,
         client_secret: typing.Optional[str] = OMIT,
-        refresh_token: typing.Optional[str] = OMIT,
-        username: typing.Optional[str] = OMIT,
-        password: typing.Optional[str] = OMIT,
-        scope: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[GetTokenResponse]:
         """
-        Exchange authorization code, refresh token, client credentials, or resource owner credentials for an access token
+        Gets a new short-lived token using the specified client credentials
 
         Parameters
         ----------
-        code : typing.Optional[str]
-            The authorization code (required for authorization_code grant type)
-
-        redirect_uri : typing.Optional[str]
-            The redirect URI (required for authorization_code grant type)
-
         client_id : typing.Optional[str]
             The client identifier
 
         client_secret : typing.Optional[str]
             The client secret
-
-        refresh_token : typing.Optional[str]
-            The refresh token (required for refresh_token grant type)
-
-        username : typing.Optional[str]
-            The resource owner username (required for password grant type)
-
-        password : typing.Optional[str]
-            The resource owner password (required for password grant type)
-
-        scope : typing.Optional[str]
-            The scope of the access request
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -186,14 +132,8 @@ class AsyncRawOAuth2Client:
             "api/v1/oauth/token",
             method="POST",
             data={
-                "code": code,
-                "redirect_uri": redirect_uri,
                 "client_id": client_id,
                 "client_secret": client_secret,
-                "refresh_token": refresh_token,
-                "username": username,
-                "password": password,
-                "scope": scope,
                 "grant_type": "client_credentials",
             },
             headers={
