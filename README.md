@@ -56,8 +56,14 @@ Instantiate and use the client with the following:
 ```python
 from anduril import Lattice
 
-client = Lattice()
-client.o_auth_2.get_token()
+client = Lattice(
+    client_id="<clientId>",
+    client_secret="<clientSecret>",
+)
+
+client.entities.long_poll_entity_events(
+    session_token="sessionToken",
+)
 ```
 
 ## Async Client
@@ -69,11 +75,16 @@ import asyncio
 
 from anduril import AsyncLattice
 
-client = AsyncLattice()
+client = AsyncLattice(
+    client_id="<clientId>",
+    client_secret="<clientSecret>",
+)
 
 
 async def main() -> None:
-    await client.o_auth_2.get_token()
+    await client.entities.long_poll_entity_events(
+        session_token="sessionToken",
+    )
 
 
 asyncio.run(main())
@@ -88,7 +99,7 @@ will be thrown.
 from anduril.core.api_error import ApiError
 
 try:
-    client.o_auth_2.get_token(...)
+    client.entities.long_poll_entity_events(...)
 except ApiError as e:
     print(e.status_code)
     print(e.body)
@@ -101,10 +112,12 @@ The SDK supports streaming responses, as well, the response will be a generator 
 ```python
 from anduril import Lattice
 
-client = Lattice()
-response = client.entities.stream_entities()
-for chunk in response.data:
-    yield chunk
+client = Lattice(
+    client_id="<clientId>",
+    client_secret="<clientSecret>",
+)
+
+client.entities.stream_entities()
 ```
 
 ## Pagination
@@ -114,13 +127,12 @@ Paginated requests will return a `SyncPager` or `AsyncPager`, which can be used 
 ```python
 from anduril import Lattice
 
-client = Lattice()
-response = client.objects.list_objects()
-for item in response:
-    yield item
-# alternatively, you can paginate page-by-page
-for page in response.iter_pages():
-    yield page
+client = Lattice(
+    client_id="<clientId>",
+    client_secret="<clientSecret>",
+)
+
+client.objects.list_objects()
 ```
 
 ```python
@@ -140,13 +152,16 @@ This SDK supports two authentication methods: OAuth client credentials flow (aut
 from anduril import Lattice
 
 # Option 1: Direct bearer token (bypass OAuth flow)
-client = Lattice(..., token="my-pre-generated-bearer-token")
-
-from anduril import Lattice
+client = Lattice(
+    ...,
+    token="my-pre-generated-bearer-token",
+)
 
 # Option 2: OAuth client credentials flow (automatic token management)
 client = Lattice(
-    ..., client_id="your-client-id", client_secret="your-client-secret"
+    ...,
+    client_id="your-client-id",
+    client_secret="your-client-secret",
 )
 ```
 
@@ -160,27 +175,11 @@ The `.with_raw_response` property returns a "raw" client that can be used to acc
 ```python
 from anduril import Lattice
 
-client = Lattice(
-    ...,
-)
-response = client.o_auth_2.with_raw_response.get_token(...)
+client = Lattice(...)
+response = client.entities.with_raw_response.long_poll_entity_events(...)
 print(response.headers)  # access the response headers
 print(response.status_code)  # access the response status code
 print(response.data)  # access the underlying object
-pager = client.objects.list_objects(...)
-print(pager.response)  # access the typed response for the first page
-for item in pager:
-    print(item)  # access the underlying object(s)
-for page in pager.iter_pages():
-    print(page.response)  # access the typed response for each page
-    for item in page:
-        print(item)  # access the underlying object(s)
-with client.entities.with_raw_response.stream_entities(...) as response:
-    print(
-        response.headers
-    )  # access the response headersprint(response.status_code)  # access the response status code
-    for chunk in response.data:
-        print(chunk)  # access the underlying object(s)
 ```
 
 ### Retries
@@ -198,7 +197,7 @@ A request is deemed retryable when any of the following HTTP status codes is ret
 Use the `max_retries` request option to configure this behavior.
 
 ```python
-client.o_auth_2.get_token(..., request_options={
+client.entities.long_poll_entity_events(..., request_options={
     "max_retries": 1
 })
 ```
@@ -208,17 +207,12 @@ client.o_auth_2.get_token(..., request_options={
 The SDK defaults to a 60 second timeout. You can configure this with a timeout option at the client or request level.
 
 ```python
-
 from anduril import Lattice
 
-client = Lattice(
-    ...,
-    timeout=20.0,
-)
-
+client = Lattice(..., timeout=20.0)
 
 # Override timeout for a specific method
-client.o_auth_2.get_token(..., request_options={
+client.entities.long_poll_entity_events(..., request_options={
     "timeout_in_seconds": 1
 })
 ```
