@@ -11,6 +11,8 @@ if typing.TYPE_CHECKING:
     from .active_target import ActiveTarget
     from .agent import Agent
     from .agent_request import AgentRequest
+    from .agent_stream_event import AgentStreamEvent
+    from .agent_task_request import AgentTaskRequest
     from .alert import Alert
     from .alert_condition import AlertCondition
     from .alert_level import AlertLevel
@@ -44,6 +46,11 @@ if typing.TYPE_CHECKING:
     from .decorrelated_all import DecorrelatedAll
     from .decorrelated_single import DecorrelatedSingle
     from .decorrelation import Decorrelation
+    from .delivery_constraints import DeliveryConstraints
+    from .delivery_error import DeliveryError
+    from .delivery_error_code import DeliveryErrorCode
+    from .delivery_state import DeliveryState
+    from .delivery_state_status import DeliveryStateStatus
     from .dimensions import Dimensions
     from .echelon import Echelon
     from .echelon_army_echelon import EchelonArmyEchelon
@@ -54,7 +61,7 @@ if typing.TYPE_CHECKING:
     from .entity_event_response import EntityEventResponse
     from .entity_ids_selector import EntityIdsSelector
     from .entity_manager_pose import EntityManagerPose
-    from .entity_manager_t_mat_3 import EntityManagerTMat3
+    from .entity_manager_t_mat3 import EntityManagerTMat3
     from .entity_stream_event import EntityStreamEvent
     from .entity_stream_heartbeat import EntityStreamHeartbeat
     from .enu import Enu
@@ -64,6 +71,7 @@ if typing.TYPE_CHECKING:
     from .field_of_view import FieldOfView
     from .field_of_view_mode import FieldOfViewMode
     from .fixed import Fixed
+    from .fixed_retry import FixedRetry
     from .frequency import Frequency
     from .frequency_range import FrequencyRange
     from .fuel import Fuel
@@ -100,14 +108,15 @@ if typing.TYPE_CHECKING:
     from .media_item import MediaItem
     from .media_item_type import MediaItemType
     from .merged_from import MergedFrom
-    from .mil_std_2525_c import MilStd2525C
+    from .mil_std2525c import MilStd2525C
     from .mil_view import MilView
     from .mil_view_disposition import MilViewDisposition
     from .mil_view_environment import MilViewEnvironment
     from .mil_view_nationality import MilViewNationality
-    from .mode_5 import Mode5
-    from .mode_5_mode_5_interrogation_response import Mode5Mode5InterrogationResponse
+    from .mode5 import Mode5
+    from .mode5mode5interrogation_response import Mode5Mode5InterrogationResponse
     from .mode_s import ModeS
+    from .munition import Munition
     from .non_primary_membership import NonPrimaryMembership
     from .ontology import Ontology
     from .ontology_template import OntologyTemplate
@@ -147,6 +156,7 @@ if typing.TYPE_CHECKING:
     from .relationship_type import RelationshipType
     from .relationships import Relationships
     from .replication import Replication
+    from .retry_strategy import RetryStrategy
     from .rf_configuration import RfConfiguration
     from .route_details import RouteDetails
     from .scan_characteristics import ScanCharacteristics
@@ -161,10 +171,11 @@ if typing.TYPE_CHECKING:
     from .sensors import Sensors
     from .signal import Signal
     from .status import Status
+    from .stream_heartbeat import StreamHeartbeat
     from .supplies import Supplies
     from .symbology import Symbology
     from .system import System
-    from .t_mat_2 import TMat2
+    from .t_mat2 import TMat2
     from .target_priority import TargetPriority
     from .task import Task
     from .task_catalog import TaskCatalog
@@ -172,9 +183,13 @@ if typing.TYPE_CHECKING:
     from .task_entity import TaskEntity
     from .task_error import TaskError
     from .task_error_code import TaskErrorCode
+    from .task_event_data import TaskEventData
+    from .task_event_data_task_event import TaskEventDataTaskEvent
+    from .task_event_data_task_event_event_type import TaskEventDataTaskEventEventType
     from .task_query_results import TaskQueryResults
     from .task_status import TaskStatus
     from .task_status_status import TaskStatusStatus
+    from .task_stream_event import TaskStreamEvent
     from .task_version import TaskVersion
     from .team import Team
     from .threat import Threat
@@ -183,8 +198,8 @@ if typing.TYPE_CHECKING:
     from .tracked import Tracked
     from .tracked_by import TrackedBy
     from .transponder_codes import TransponderCodes
-    from .transponder_codes_mode_4_interrogation_response import TransponderCodesMode4InterrogationResponse
-    from .u_int_32_range import UInt32Range
+    from .transponder_codes_mode4interrogation_response import TransponderCodesMode4InterrogationResponse
+    from .u_int32range import UInt32Range
     from .unauthorized_error_body import UnauthorizedErrorBody
     from .user import User
     from .visual_details import VisualDetails
@@ -194,6 +209,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ActiveTarget": ".active_target",
     "Agent": ".agent",
     "AgentRequest": ".agent_request",
+    "AgentStreamEvent": ".agent_stream_event",
+    "AgentTaskRequest": ".agent_task_request",
     "Alert": ".alert",
     "AlertCondition": ".alert_condition",
     "AlertLevel": ".alert_level",
@@ -227,6 +244,11 @@ _dynamic_imports: typing.Dict[str, str] = {
     "DecorrelatedAll": ".decorrelated_all",
     "DecorrelatedSingle": ".decorrelated_single",
     "Decorrelation": ".decorrelation",
+    "DeliveryConstraints": ".delivery_constraints",
+    "DeliveryError": ".delivery_error",
+    "DeliveryErrorCode": ".delivery_error_code",
+    "DeliveryState": ".delivery_state",
+    "DeliveryStateStatus": ".delivery_state_status",
     "Dimensions": ".dimensions",
     "Echelon": ".echelon",
     "EchelonArmyEchelon": ".echelon_army_echelon",
@@ -237,7 +259,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "EntityEventResponse": ".entity_event_response",
     "EntityIdsSelector": ".entity_ids_selector",
     "EntityManagerPose": ".entity_manager_pose",
-    "EntityManagerTMat3": ".entity_manager_t_mat_3",
+    "EntityManagerTMat3": ".entity_manager_t_mat3",
     "EntityStreamEvent": ".entity_stream_event",
     "EntityStreamHeartbeat": ".entity_stream_heartbeat",
     "Enu": ".enu",
@@ -247,6 +269,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "FieldOfView": ".field_of_view",
     "FieldOfViewMode": ".field_of_view_mode",
     "Fixed": ".fixed",
+    "FixedRetry": ".fixed_retry",
     "Frequency": ".frequency",
     "FrequencyRange": ".frequency_range",
     "Fuel": ".fuel",
@@ -283,14 +306,15 @@ _dynamic_imports: typing.Dict[str, str] = {
     "MediaItem": ".media_item",
     "MediaItemType": ".media_item_type",
     "MergedFrom": ".merged_from",
-    "MilStd2525C": ".mil_std_2525_c",
+    "MilStd2525C": ".mil_std2525c",
     "MilView": ".mil_view",
     "MilViewDisposition": ".mil_view_disposition",
     "MilViewEnvironment": ".mil_view_environment",
     "MilViewNationality": ".mil_view_nationality",
-    "Mode5": ".mode_5",
-    "Mode5Mode5InterrogationResponse": ".mode_5_mode_5_interrogation_response",
+    "Mode5": ".mode5",
+    "Mode5Mode5InterrogationResponse": ".mode5mode5interrogation_response",
     "ModeS": ".mode_s",
+    "Munition": ".munition",
     "NonPrimaryMembership": ".non_primary_membership",
     "Ontology": ".ontology",
     "OntologyTemplate": ".ontology_template",
@@ -330,6 +354,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "RelationshipType": ".relationship_type",
     "Relationships": ".relationships",
     "Replication": ".replication",
+    "RetryStrategy": ".retry_strategy",
     "RfConfiguration": ".rf_configuration",
     "RouteDetails": ".route_details",
     "ScanCharacteristics": ".scan_characteristics",
@@ -344,10 +369,11 @@ _dynamic_imports: typing.Dict[str, str] = {
     "Sensors": ".sensors",
     "Signal": ".signal",
     "Status": ".status",
+    "StreamHeartbeat": ".stream_heartbeat",
     "Supplies": ".supplies",
     "Symbology": ".symbology",
     "System": ".system",
-    "TMat2": ".t_mat_2",
+    "TMat2": ".t_mat2",
     "TargetPriority": ".target_priority",
     "Task": ".task",
     "TaskCatalog": ".task_catalog",
@@ -355,9 +381,13 @@ _dynamic_imports: typing.Dict[str, str] = {
     "TaskEntity": ".task_entity",
     "TaskError": ".task_error",
     "TaskErrorCode": ".task_error_code",
+    "TaskEventData": ".task_event_data",
+    "TaskEventDataTaskEvent": ".task_event_data_task_event",
+    "TaskEventDataTaskEventEventType": ".task_event_data_task_event_event_type",
     "TaskQueryResults": ".task_query_results",
     "TaskStatus": ".task_status",
     "TaskStatusStatus": ".task_status_status",
+    "TaskStreamEvent": ".task_stream_event",
     "TaskVersion": ".task_version",
     "Team": ".team",
     "Threat": ".threat",
@@ -366,8 +396,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "Tracked": ".tracked",
     "TrackedBy": ".tracked_by",
     "TransponderCodes": ".transponder_codes",
-    "TransponderCodesMode4InterrogationResponse": ".transponder_codes_mode_4_interrogation_response",
-    "UInt32Range": ".u_int_32_range",
+    "TransponderCodesMode4InterrogationResponse": ".transponder_codes_mode4interrogation_response",
+    "UInt32Range": ".u_int32range",
     "UnauthorizedErrorBody": ".unauthorized_error_body",
     "User": ".user",
     "VisualDetails": ".visual_details",
@@ -401,6 +431,8 @@ __all__ = [
     "ActiveTarget",
     "Agent",
     "AgentRequest",
+    "AgentStreamEvent",
+    "AgentTaskRequest",
     "Alert",
     "AlertCondition",
     "AlertLevel",
@@ -434,6 +466,11 @@ __all__ = [
     "DecorrelatedAll",
     "DecorrelatedSingle",
     "Decorrelation",
+    "DeliveryConstraints",
+    "DeliveryError",
+    "DeliveryErrorCode",
+    "DeliveryState",
+    "DeliveryStateStatus",
     "Dimensions",
     "Echelon",
     "EchelonArmyEchelon",
@@ -454,6 +491,7 @@ __all__ = [
     "FieldOfView",
     "FieldOfViewMode",
     "Fixed",
+    "FixedRetry",
     "Frequency",
     "FrequencyRange",
     "Fuel",
@@ -498,6 +536,7 @@ __all__ = [
     "Mode5",
     "Mode5Mode5InterrogationResponse",
     "ModeS",
+    "Munition",
     "NonPrimaryMembership",
     "Ontology",
     "OntologyTemplate",
@@ -537,6 +576,7 @@ __all__ = [
     "RelationshipType",
     "Relationships",
     "Replication",
+    "RetryStrategy",
     "RfConfiguration",
     "RouteDetails",
     "ScanCharacteristics",
@@ -551,6 +591,7 @@ __all__ = [
     "Sensors",
     "Signal",
     "Status",
+    "StreamHeartbeat",
     "Supplies",
     "Symbology",
     "System",
@@ -562,9 +603,13 @@ __all__ = [
     "TaskEntity",
     "TaskError",
     "TaskErrorCode",
+    "TaskEventData",
+    "TaskEventDataTaskEvent",
+    "TaskEventDataTaskEventEventType",
     "TaskQueryResults",
     "TaskStatus",
     "TaskStatusStatus",
+    "TaskStreamEvent",
     "TaskVersion",
     "Team",
     "Threat",
