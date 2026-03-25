@@ -7,19 +7,13 @@ import typing
 import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel, update_forward_refs
-from ...core.serialization import FieldMetadata
-from ...types.cancel_request import CancelRequest
-from ...types.complete_request import CompleteRequest
-from ...types.execute_request import ExecuteRequest
+from ...types.agent_task_request import AgentTaskRequest
+from ...types.heartbeat_object import HeartbeatObject
 
 
 class StreamAsAgentResponse_Heartbeat(UniversalBaseModel):
-    """
-    The stream event response.
-    """
-
     event: typing.Literal["heartbeat"] = "heartbeat"
-    timestamp: typing.Optional[str] = None
+    data: HeartbeatObject
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -32,22 +26,8 @@ class StreamAsAgentResponse_Heartbeat(UniversalBaseModel):
 
 
 class StreamAsAgentResponse_AgentRequest(UniversalBaseModel):
-    """
-    The stream event response.
-    """
-
     event: typing.Literal["agent_request"] = "agent_request"
-    execute_request: typing_extensions.Annotated[
-        typing.Optional[ExecuteRequest], FieldMetadata(alias="executeRequest"), pydantic.Field(alias="executeRequest")
-    ] = None
-    cancel_request: typing_extensions.Annotated[
-        typing.Optional[CancelRequest], FieldMetadata(alias="cancelRequest"), pydantic.Field(alias="cancelRequest")
-    ] = None
-    complete_request: typing_extensions.Annotated[
-        typing.Optional[CompleteRequest],
-        FieldMetadata(alias="completeRequest"),
-        pydantic.Field(alias="completeRequest"),
-    ] = None
+    data: AgentTaskRequest
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

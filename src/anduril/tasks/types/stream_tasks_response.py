@@ -7,17 +7,13 @@ import typing
 import pydantic
 import typing_extensions
 from ...core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel, update_forward_refs
-from ...core.serialization import FieldMetadata
-from ...types.task_event_data_task_event import TaskEventDataTaskEvent
+from ...types.heartbeat_object import HeartbeatObject
+from ...types.task_event_data import TaskEventData
 
 
 class StreamTasksResponse_Heartbeat(UniversalBaseModel):
-    """
-    The stream event response.
-    """
-
     event: typing.Literal["heartbeat"] = "heartbeat"
-    timestamp: typing.Optional[str] = None
+    data: HeartbeatObject
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
@@ -30,14 +26,8 @@ class StreamTasksResponse_Heartbeat(UniversalBaseModel):
 
 
 class StreamTasksResponse_TaskEvent(UniversalBaseModel):
-    """
-    The stream event response.
-    """
-
     event: typing.Literal["task_event"] = "task_event"
-    task_event: typing_extensions.Annotated[
-        typing.Optional[TaskEventDataTaskEvent], FieldMetadata(alias="taskEvent"), pydantic.Field(alias="taskEvent")
-    ] = None
+    data: TaskEventData
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
